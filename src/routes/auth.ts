@@ -5,7 +5,7 @@ import crypto from 'crypto'
 
 const router = express.Router();
 
-router.get('/login', (req: Request, res: Response) => {
+router.get('/login/password', (req: Request, res: Response) => {
     res.render('login');
 });
   
