@@ -1,11 +1,15 @@
-import express, { Express, Request, Response } from 'express';
+import express, { Express } from 'express';
 import path from 'path';
 import mongoose from 'mongoose';
-import session, { Store } from 'express-session';
+import session from 'express-session';
+import passport from 'passport';
+import passportLocal from 'passport-local';
+
 
 import indexRouter from './routes/index';
 import authRouter from './routes/auth';
-import { SessionOptions } from 'http2';
+
+import User from './models/user'
 
 import MongoStore from 'connect-mongo'
 
@@ -19,6 +23,7 @@ db.on("error", console.error.bind(console, "connection error:"))
 db.once("open", () => {
     console.log("Database connected")
 })
+
 
 
 const app: Express = express();
@@ -43,7 +48,8 @@ store.on("error", function (e: any) {
     console.log("SESSION STORE ERROR", e)
 })
 
-const sessionConfig = {
+// TODO: find right type
+const sessionConfig: any = {
     store: store,
     name: 'session',
     secret: secret,
@@ -58,6 +64,14 @@ const sessionConfig = {
 }
 
 app.use(session(sessionConfig))
+
+app.use(passport.initialize())
+app.use(passport.session())
+const LocalStrategy = passportLocal.Strategy;
+passport.use(new LocalStrategy(User.authenticate()))
+passport.serializeUser(User.serializeUser())
+passport.deserializeUser(User.deserializeUser())
+
 
 app.use('/', indexRouter);
 app.use('/', authRouter);
