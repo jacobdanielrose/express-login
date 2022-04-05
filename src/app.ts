@@ -1,52 +1,72 @@
+/*********************
+ * EXTENERAL IMPORTS *
+ *********************/
 import express, { Express } from 'express';
 import path from 'path';
-import mongoose from 'mongoose';
+import { connect, connection } from 'mongoose';
 import session from 'express-session';
 import passport from 'passport';
-import passportLocal from 'passport-local';
+import { Strategy as LocalStrategy } from 'passport-local';
+import mongoSanitize from 'express-mongo-sanitize';
+import MongoStore from 'connect-mongo'
 
+/********************
+ * INTERNAL IMPORTS *
+ ********************/
 
+// ROUTES
 import indexRouter from './routes/index';
 import authRouter from './routes/auth';
 
+// MODELS
 import User from './models/user'
 
-import MongoStore from 'connect-mongo'
+// CONTROLLERS
 
+// UTILS
 
-const dbUrl: string = 'mongodb://localhost:27017/express-login'
+/*******************
+ * DATABASE CONFIG *
+ *******************/
 
-mongoose.connect(dbUrl)
-
-const db = mongoose.connection;
+const dbUrl: string = 'mongodb://localhost:27017/express-login';
+connect(dbUrl)
+const db = connection;
 db.on("error", console.error.bind(console, "connection error:"))
 db.once("open", () => {
     console.log("Database connected")
 })
-
-
-
-const app: Express = express();
-
-app.set( "views", path.join( __dirname, "views" ) );
-app.set('view engine', 'ejs');
-
-
-app.use(express.static(path.join(__dirname, 'public')))
-
-
 const secret = process.env.SECRET || 'thisshouldbeabettersecret!';
-
 const storeOptions = {
     mongoUrl: dbUrl,
     secret,
     touchAfter: 24 * 60 * 60
 }
 const store = new MongoStore(storeOptions)
-
 store.on("error", function (e: any) {
     console.log("SESSION STORE ERROR", e)
 })
+
+
+/**********************
+ * APPLICATION CONFIG *
+ **********************/
+
+const app: Express = express();
+app.set( "views", path.join( __dirname, "views" ) );
+app.set('view engine', 'ejs');
+app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.json())
+app.use('/', indexRouter);
+app.use('/', authRouter);
+app.use(express.urlencoded({ extended: true }))
+app.use(mongoSanitize({
+    replaceWith: '_',
+}))
+
+/***********
+ * SESSION *
+ ***********/
 
 // TODO: find right type
 const sessionConfig: any = {
@@ -62,19 +82,16 @@ const sessionConfig: any = {
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }
-
 app.use(session(sessionConfig))
 
+
+/***************
+ * AUTH CONFIG *
+ ***************/
 app.use(passport.initialize())
 app.use(passport.session())
-const LocalStrategy = passportLocal.Strategy;
 passport.use(new LocalStrategy(User.authenticate()))
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
-
-
-app.use('/', indexRouter);
-app.use('/', authRouter);
-
 
 export default app;

@@ -1,10 +1,37 @@
-import { Request, Response } from 'express';
+import User from '../models/user';
+import { Request, Response, NextFunction } from 'express';
 
-module.exports.login = (req: Request, res: Response) => {
+export function renderSignup (req: Request, res: Response) {
+    res.render('signup')
+}
+
+export async function register(req: Request, res: Response, next: NextFunction) {
+    try {
+        const { email, username, password } = req.body
+        console.log(email)
+        const user = new User({ email, username })
+        const registeredUser = await User.register(user, password)
+        console.log(user)
+        console.log(registeredUser)
+        req.login(registeredUser, err => {
+            if (err) return next(err)
+            res.redirect('/')
+        })
+    } catch (e) {
+        console.log(e)
+        res.redirect('/signup')
+    }
+}
+
+export function renderLogin(req: Request, res: Response) {
+    res.render('login')
+}
+
+export function login(req: Request, res: Response) {
     res.redirect('/')
 }
 
-module.exports.logout = (req: Request, res: Response) => {
+export function logout(req: Request, res: Response) {
     req.logout()
-    res.redirect('/')
+    res.redirect('/logout')
 }

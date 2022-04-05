@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@types/ejs": "^3.1.0",
+    "@types/express-mongo-sanitize": "^2.1.0",
     "connect-mongo": "^4.6.0",
     "dotenv": "^16.0.0",
     "ejs": "^3.1.6",
