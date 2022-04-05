@@ -5,6 +5,14 @@ export function renderSignup (req: Request, res: Response) {
     res.render('signup')
 }
 
+export function renderLogout (req: Request, res: Response) {
+    res.render('logout')
+}
+
+export function renderLogin(req: Request, res: Response) {
+    res.render('login')
+}
+
 export async function register(req: Request, res: Response, next: NextFunction) {
     try {
         const { email, username, password } = req.body
@@ -20,12 +28,14 @@ export async function register(req: Request, res: Response, next: NextFunction) 
     }
 }
 
-export function renderLogin(req: Request, res: Response) {
-    res.render('login')
-}
-
 export function login(req: Request, res: Response) {
-    res.redirect('/')
+    // use ts ignore here for now, because a dumb type change for session
+    // has been implemented for newest @types/express-session version
+    //@ts-ignore
+    const redirectUrl = req.session.returnTo || '/'
+    //@ts-ignore
+    delete req.session.returnTo
+    res.redirect(redirectUrl)
 }
 
 export function logout(req: Request, res: Response) {

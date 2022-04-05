@@ -3,7 +3,7 @@
  *********************/
 import express, { Express } from 'express';
 import path from 'path';
-import { connect, connection } from 'mongoose';
+import { connect, connection as db } from 'mongoose';
 import session from 'express-session';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
@@ -21,17 +21,12 @@ import authRouter from './routes/auth';
 // MODELS
 import User from './models/user'
 
-// CONTROLLERS
-
-// UTILS
-
 /*******************
  * DATABASE CONFIG *
  *******************/
 
 const dbUrl: string = 'mongodb://localhost:27017/express-login';
 connect(dbUrl)
-const db = connection;
 db.on("error", console.error.bind(console, "connection error:"))
 db.once("open", () => {
     console.log("Database connected")
@@ -44,7 +39,7 @@ const storeOptions = {
 }
 const store = new MongoStore(storeOptions)
 store.on("error", function (e: any) {
-    console.log("SESSION STORE ERROR", e)
+    console.log("SESSION STORE ERROR:", e)
 })
 
 

@@ -17,5 +17,8 @@
   "include": [
     "server.ts",
       "src/**/*"
+  ],
+  "typeRoots": [
+    "./node_modules/@types"
   ]
 }
