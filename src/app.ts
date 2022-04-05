@@ -57,8 +57,6 @@ app.set( "views", path.join( __dirname, "views" ) );
 app.set('view engine', 'ejs');
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(express.json())
-app.use('/', indexRouter);
-app.use('/', authRouter);
 app.use(express.urlencoded({ extended: true }))
 app.use(mongoSanitize({
     replaceWith: '_',
@@ -93,5 +91,12 @@ app.use(passport.session())
 passport.use(new LocalStrategy(User.authenticate()))
 passport.serializeUser(User.serializeUser())
 passport.deserializeUser(User.deserializeUser())
+
+
+/********************
+ * IMPLEMENT ROUTES *
+ ********************/
+app.use('/', indexRouter);
+app.use('/', authRouter);
 
 export default app;
