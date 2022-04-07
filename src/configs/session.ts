@@ -2,6 +2,7 @@ import session from 'express-session';
 import Express from 'express'
 import { store, secret } from './database'
 
+// TODO: find right type
 export default function initSession(app: Express.Application) {
     const sessionConfig: any = {
         store: store,
