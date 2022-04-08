@@ -12,8 +12,7 @@ import mongoSanitize from 'express-mongo-sanitize';
 // ROUTES
 import indexRouter from './routes/index';
 import authRouter from './routes/auth';
-import initPassport from './configs/passport'
-import initSession from './configs/session'
+import initAuth from './configs/auth'
 import initDB from './configs/database';
 
 // MODELS
@@ -37,15 +36,10 @@ app.use(mongoSanitize({
  *******************/
  initDB();
 
-/***********
- * SESSION *
- ***********/
-initSession(app);
-
-/***************
- * AUTH CONFIG *
- ***************/
- initPassport(app);
+/***********************
+ * AUTH/SESSION CONFIG *
+ ***********************/
+ initAuth(app);
 
 /********************
  * IMPLEMENT ROUTES *

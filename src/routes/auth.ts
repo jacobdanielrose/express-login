@@ -1,5 +1,4 @@
 import { Router } from '@awaitjs/express';
-import { Request, Response } from 'express';
 import passport from 'passport'
 
 import { renderLogin, register, renderSignup, login, logout } from '../controllers/user'
