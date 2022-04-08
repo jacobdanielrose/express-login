@@ -5,10 +5,6 @@ export function renderSignup (req: Request, res: Response) {
     res.render('signup')
 }
 
-export function renderLogout (req: Request, res: Response) {
-    res.render('logout')
-}
-
 export function renderLogin(req: Request, res: Response) {
     res.render('login')
 }
@@ -40,5 +36,5 @@ export function login(req: Request, res: Response) {
 
 export function logout(req: Request, res: Response) {
     req.logout()
-    res.redirect('/logout')
+    res.redirect('/login')
 }
