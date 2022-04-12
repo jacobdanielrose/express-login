@@ -1,11 +1,11 @@
 import passport from 'passport';
 import Express from 'express'
 import { Strategy as LocalStrategy } from 'passport-local';
-import GoogleStrategy from 'passport-google-oauth20';
 import session from 'express-session';
-import { store, secret } from './database'
+import { store, secret } from '../database'
 
-import User from '../models/user'
+import User from '../../models/user'
+import { localAuth } from './strategies/local-auth';
 
 export default function initAuth(app: Express.Application) {
     const sessionConfig: any = {
@@ -22,15 +22,21 @@ export default function initAuth(app: Express.Application) {
         }
     }
 
-    const googleClientConfig: any = {
-        clientID: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_ID,
-        callbackURL: "http://www.example.com/auth/google/callback"
-    }
+   
     app.use(session(sessionConfig))
     app.use(passport.initialize())
     app.use(passport.session())
-    passport.use(new LocalStrategy(User.authenticate()))
-    passport.serializeUser(User.serializeUser())
-    passport.deserializeUser(User.deserializeUser())
+
+    passport.serializeUser((user : any, done) => {
+        done(null, user.id);
+    })
+    
+    passport.deserializeUser((id, done) => {
+        User.findById(id, (err : any, user : any) => {
+            done(err, user);
+        })
+    })
+
+    passport.use(localAuth)
+
 }

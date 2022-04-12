@@ -12,8 +12,8 @@ export function renderLogin(req: Request, res: Response) {
 export async function register(req: Request, res: Response, next: NextFunction) {
     try {
         const { email, username, password } = req.body
-        const user = new User({ email, username })
-        const registeredUser = await User.register(user, password)
+        const user = new User({ email, password })
+        const registeredUser = await user.save()
         req.login(registeredUser, err => {
             if (err) return next(err)
             res.redirect('/')

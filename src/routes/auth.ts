@@ -9,7 +9,7 @@ router.route('/login').get(renderLogin);
 
 router.route('/signup').get(renderSignup);
   
-router.post('/login/password', passport.authenticate('local', { failureFlash: true, failureRedirect: '/login' }), login);
+router.post('/login/password', passport.authenticate('local', { failureRedirect: '/login' }), login);
   
 router.postAsync('/signup/password', register);
   

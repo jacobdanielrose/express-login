@@ -12,7 +12,7 @@ import mongoSanitize from 'express-mongo-sanitize';
 // ROUTES
 import indexRouter from './routes/index';
 import authRouter from './routes/auth';
-import initAuth from './configs/auth'
+import initAuth from './configs/auth/auth'
 import initDB from './configs/database';
 
 // MODELS
